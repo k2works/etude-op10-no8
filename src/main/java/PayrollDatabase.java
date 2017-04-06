@@ -4,7 +4,7 @@ import java.util.Map;
 /**
  * Created by k2works on 2017/04/06.
  */
-public class PayrollDatabase {
+class PayrollDatabase {
     private static Map<Integer, Employee> itsEmployees = new HashMap<Integer, Employee>();
 
     public static void AddEmployee(int empId, Employee e) {
@@ -15,7 +15,7 @@ public class PayrollDatabase {
         return itsEmployees.get(empId);
     }
 
-    public static void Clear(){
-        itsEmployees.clear();
+    public static void DeleteEmployee(int empId) {
+        itsEmployees.remove(empId);
     }
 }
