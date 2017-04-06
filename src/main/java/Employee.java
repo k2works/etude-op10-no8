@@ -8,6 +8,7 @@ class Employee {
     private PaymentClassification itsClassification;
     private PaymentSchedule itsSchedule;
     private PaymentMethod itsPaymentMethod;
+    private Affiliation itsAffiliation;
 
     public Employee(int empId, String name, String address) {
         itsEmpId = empId;
@@ -57,5 +58,13 @@ class Employee {
 
     public void SetMethod(PaymentMethod pm) {
         itsPaymentMethod = pm;
+    }
+
+    public Affiliation GetAffiliation() {
+        return itsAffiliation;
+    }
+
+    public void SetAffiliation(Affiliation af) {
+        itsAffiliation = af;
     }
 }

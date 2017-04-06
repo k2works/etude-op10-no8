@@ -6,6 +6,7 @@ import java.util.Map;
  */
 class PayrollDatabase {
     private static Map<Integer, Employee> itsEmployees = new HashMap<Integer, Employee>();
+    private static Map<Integer, Employee> itsUnionMembers = new HashMap<Integer, Employee>();
 
     public static void AddEmployee(int empId, Employee e) {
         itsEmployees.put(empId, e);
@@ -17,5 +18,13 @@ class PayrollDatabase {
 
     public static void DeleteEmployee(int empId) {
         itsEmployees.remove(empId);
+    }
+
+    public static void AddUnionMember(int memberId, Employee e) {
+        itsUnionMembers.put(memberId, e);
+    }
+
+    public static Employee GetUnionMbember(int memberId) {
+        return itsUnionMembers.get(memberId);
     }
 }
