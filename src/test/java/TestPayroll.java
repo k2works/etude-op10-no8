@@ -23,4 +23,24 @@ public class TestPayroll extends TestCase{
         HoldMethod hm = (HoldMethod) pm;
         assertNotNull(hm);
     }
+
+    public void testAddHourlyEmployee() {
+        System.err.println("TestAddHourlyEmployee");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        t.Execute();
+        Employee e = PayrollDatabase.GetEmployee(empId);
+        assertNotNull(e);
+        assertEquals("Bill", e.GetName());
+        PaymentClassification pc = e.GetClassification();
+        HourlyClassification hc = (HourlyClassification) pc;
+        assertNotNull(hc);
+        assertEquals(15.25, hc.GetRate());
+        PaymentSchedule ps = e.GetSchedule();
+        WeeklySchedule ws = (WeeklySchedule) ps;
+        assertNotNull(ws);
+        PaymentMethod pm = e.GetMethod();
+        HoldMethod hm = (HoldMethod) pm;
+        assertNotNull(hm);
+    }
 }
