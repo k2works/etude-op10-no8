@@ -154,4 +154,23 @@ public class TestPayroll extends TestCase{
         assertNotNull(e);
         assertEquals("Second Home", e.GetAddress());
     }
+
+    public void testChangeHourlyTransaction() {
+        System.err.println("TestChangeHourlyTransaction");
+        int empId = 3;
+        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home",2500,3.2);
+        t.Execute();
+        ChangeHourlyTransaction cht = new ChangeHourlyTransaction(empId, 27.52);
+        cht.Execute();
+        Employee e = PayrollDatabase.GetEmployee(empId);
+        assertNotNull(e);
+        PaymentClassification pc = e.GetClassification();
+        assertNotNull(pc);
+        HourlyClassification hc = (HourlyClassification) pc;
+        assertNotNull(hc);
+        assertEquals(27.52, hc.GetRate());
+        PaymentSchedule ps = e.GetSchedule();
+        WeeklySchedule ws = (WeeklySchedule) ps;
+        assertNotNull(ws);
+    }
 }
