@@ -7,8 +7,8 @@ public abstract class ChangeMethodTransaction extends ChangeEmployeeTransaction 
     }
 
     public void Change(Employee e) {
-        e.SetMethod(GetMthod());
+        e.SetMethod(GetMethod());
     }
 
-    abstract PaymentMethod GetMthod();
+    abstract PaymentMethod GetMethod();
 }

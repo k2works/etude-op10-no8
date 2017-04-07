@@ -9,7 +9,7 @@ public class ChangeMailTransaction extends ChangeMethodTransaction {
         itsAddress = address;
     }
 
-    PaymentMethod GetMthod() {
+    PaymentMethod GetMethod() {
         return new MailMethod(itsAddress);
     }
 }

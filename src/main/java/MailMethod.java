@@ -1,7 +1,7 @@
 /**
  * Created by k2works on 2017/04/07.
  */
-public class MailMethod extends PaymentMethod {
+public class MailMethod implements PaymentMethod {
     private String itsAddress;
 
     public MailMethod(String address) {

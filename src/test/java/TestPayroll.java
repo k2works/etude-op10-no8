@@ -228,4 +228,21 @@ public class TestPayroll extends TestCase{
         assertNotNull(mm);
         assertEquals("4080 El Cerrito Road", mm.GetAddress());
     }
+
+    public void testChangeDirectTransaction() {
+        System.err.println("TestChangeDirectTransaction");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        t.Execute();
+        ChangeDirectTransaction cdt = new ChangeDirectTransaction(empId, "FirstNational", "1058209");
+        cdt.Execute();
+        Employee e = PayrollDatabase.GetEmployee(empId);
+        assertNotNull(e);
+        PaymentMethod pm = e.GetMethod();
+        assertNotNull(pm);
+        DirectMethod dm = (DirectMethod) pm;
+        assertNotNull(dm);
+        assertEquals("FirstNational", dm.GetBank());
+        assertEquals("1058209",dm.GetAccount());
+    }
 }
