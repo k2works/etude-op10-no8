@@ -173,4 +173,23 @@ public class TestPayroll extends TestCase{
         WeeklySchedule ws = (WeeklySchedule) ps;
         assertNotNull(ws);
     }
+
+    public void testChangeSalariedTransaction() {
+        System.err.println("TestChangeSalariedTransaction");
+        int empId = 3;
+        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, 3.2);
+        t.Execute();
+        ChangeSalariedTransaction cst = new ChangeSalariedTransaction(empId, 25000);
+        cst.Execute();
+        Employee e = PayrollDatabase.GetEmployee(empId);
+        assertNotNull(e);
+        PaymentClassification pc = e.GetClassification();
+        assertNotNull(pc);
+        SalariedClassification sc = (SalariedClassification) pc;
+        assertNotNull(sc);
+        assertEquals(25000.0, sc.GetSalary());
+        PaymentSchedule ps = e.GetSchedule();
+        MonthlySchedule ms = (MonthlySchedule) ps;
+        assertNotNull(ms);
+    }
 }
