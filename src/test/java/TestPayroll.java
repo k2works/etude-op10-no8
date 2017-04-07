@@ -142,4 +142,16 @@ public class TestPayroll extends TestCase{
         assertNotNull(e);
         assertEquals("Bob", e.GetName());
     }
+
+    public void testChangeAddressTransaction() {
+        System.err.println("TestChangeAddressTransaction");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        t.Execute();
+        ChangeAddressTransaction cat = new ChangeAddressTransaction(empId, "Second Home");
+        cat.Execute();
+        Employee e = PayrollDatabase.GetEmployee(empId);
+        assertNotNull(e);
+        assertEquals("Second Home", e.GetAddress());
+    }
 }
