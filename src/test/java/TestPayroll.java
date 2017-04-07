@@ -260,4 +260,24 @@ public class TestPayroll extends TestCase{
         HoldMethod hm = (HoldMethod) pm;
         assertNotNull(hm);
     }
+
+    public void testChangeMemberTransaction() {
+        System.err.println("TestChangeMemberTransaction");
+        int empId = 2;
+        int memberId = 7734;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill","Home",15.25);
+        t.Execute();
+        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 99.42);
+        cmt.Execute();
+        Employee e = PayrollDatabase.GetEmployee(empId);
+        assertNotNull(e);
+        Affiliation af = e.GetAffiliation();
+        assertNotNull(af);
+        UnionAffiliation uf = (UnionAffiliation) af;
+        assertNotNull(uf);
+        assertEquals(99.42, uf.GetDues());
+        Employee member = PayrollDatabase.GetUnionMbember(memberId);
+        assertNotNull(member);
+        assertEquals(e,member);
+    }
 }
