@@ -295,6 +295,18 @@ public class TestPayroll extends TestCase{
         ValidatePaycheck(pt, empId, payDate, 1000.0);
     }
 
+    public void testPaySingleSalariedEmployeeOnWrongDate() {
+        System.err.println("TestPaySingleSalariedEmployeeOnWrongDate");
+        int empId = 1;
+        AddSalariedEmployee t = new AddSalariedEmployee(empId,"Bob","Home",1000.0);
+        t.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER,29);
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        Paycheck pc = pt.GetPaycheck(empId);
+        assertNull(pc);
+    }
+
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
