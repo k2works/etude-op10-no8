@@ -245,4 +245,19 @@ public class TestPayroll extends TestCase{
         assertEquals("FirstNational", dm.GetBank());
         assertEquals("1058209",dm.GetAccount());
     }
+
+    public void testChangeHoldTransaction() {
+        System.err.println("TestChangeHoldTransaction");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",15.25);
+        t.Execute();
+        ChangeHoldTransaction cht = new ChangeHoldTransaction(empId);
+        cht.Execute();
+        Employee e = PayrollDatabase.GetEmployee(empId);
+        assertNotNull(e);
+        PaymentMethod pm = e.GetMethod();
+        assertNotNull(pm);
+        HoldMethod hm = (HoldMethod) pm;
+        assertNotNull(hm);
+    }
 }
