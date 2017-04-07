@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,5 +32,9 @@ class PayrollDatabase {
 
     public static void RemoveUnionMember(int memberId) {
         itsUnionMembers.remove(memberId);
+    }
+
+    public static List<Integer> GetAllEmployeeIds() {
+        return new ArrayList<Integer>(itsEmployees.keySet());
     }
 }

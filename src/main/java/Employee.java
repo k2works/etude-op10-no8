@@ -1,3 +1,5 @@
+import java.util.Calendar;
+
 /**
  * Created by k2works on 2017/04/06.
  */
@@ -14,6 +16,7 @@ class Employee {
         itsEmpId = empId;
         itsName = name;
         itsAddress = address;
+        itsAffiliation = new NoAffiliation();
     }
 
     public int GetEmpId() {
@@ -66,5 +69,23 @@ class Employee {
 
     public void SetAffiliation(Affiliation af) {
         itsAffiliation = af;
+    }
+
+    public boolean IsPayDate(Calendar payDate) {
+        return itsSchedule.IsPayDate(payDate);
+    }
+
+    public Calendar GetPayPeriodStartDate(Calendar payDate) {
+        return itsSchedule.GetPayPeriodStartDate(payDate);
+    }
+
+    public void Payday(Paycheck pc) {
+        double grossPay = itsClassification.CalculatePay(pc);
+        double deductions = itsAffiliation.CalculateDeductions(pc);
+        double netPay = grossPay - deductions;
+        pc.SetGrossPay(grossPay);
+        pc.SetDeductions(deductions);
+        pc.SetNetPay(netPay);
+        itsPaymentMethod.Pay(pc);
     }
 }

@@ -5,4 +5,8 @@ public class NoAffiliation implements Affiliation {
     public double GetServiceCharge(long date) {
         return 0;
     }
+
+    public double CalculateDeductions(Paycheck pc) {
+        return 0;
+    }
 }

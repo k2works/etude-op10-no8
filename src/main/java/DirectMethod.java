@@ -18,4 +18,8 @@ public class DirectMethod implements PaymentMethod {
     public String GetAccount() {
         return itsAccount;
     }
+
+    public void Pay(Paycheck pc) {
+
+    }
 }

@@ -11,4 +11,8 @@ public class MailMethod implements PaymentMethod {
     public String GetAddress() {
         return itsAddress;
     }
+
+    public void Pay(Paycheck pc) {
+
+    }
 }

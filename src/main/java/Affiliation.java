@@ -3,4 +3,6 @@
  */
 public interface Affiliation {
     double GetServiceCharge(long date);
+
+    double CalculateDeductions(Paycheck pc);
 }

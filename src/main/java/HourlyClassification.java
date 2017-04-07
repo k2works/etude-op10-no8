@@ -24,4 +24,8 @@ public class HourlyClassification implements  PaymentClassification {
     public void AddTimeCard(TimeCard tc) {
         itsTimeCards.put(tc.GetDate(), tc);
     }
+
+    public double CalculatePay(Paycheck pc) {
+        return 0;
+    }
 }

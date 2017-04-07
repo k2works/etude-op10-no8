@@ -30,4 +30,8 @@ public class CommissionedClassification implements PaymentClassification {
     public SalesReceipt GetReceipt(long date) {
         return itsReceipts.get(date);
     }
+
+    public double CalculatePay(Paycheck pc) {
+        return 0;
+    }
 }

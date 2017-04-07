@@ -1,5 +1,8 @@
 import junit.framework.TestCase;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 /**
  * Created by k2works on 2017/04/06.
  */
@@ -279,5 +282,26 @@ public class TestPayroll extends TestCase{
         Employee member = PayrollDatabase.GetUnionMbember(memberId);
         assertNotNull(member);
         assertEquals(e,member);
+    }
+
+    public void testPaySingleSalariedEmployee() {
+        System.err.println("TestPaySingleSalariedEmployee");
+        int empId = 1;
+        AddSalariedEmployee t = new AddSalariedEmployee(empId,"Bob","Home",1000.0);
+        t.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER,30);
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        ValidatePaycheck(pt, empId, payDate, 1000.0);
+    }
+
+    private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
+        Paycheck pc = pt.GetPaycheck(empId);
+        assertNotNull(pc);
+        assertEquals(pc.GetPayPeriodEndDate(), payDate);
+        assertEquals(pay, pc.GetGrossPay());
+        assertEquals("Hold", pc.GetField("Disposition"));
+        assertEquals(0.0, pc.GetDeducations());
+        assertEquals(pay, pc.GetNetPay());
     }
 }

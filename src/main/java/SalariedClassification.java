@@ -12,4 +12,7 @@ public class SalariedClassification implements PaymentClassification {
         return itsSalary;
     }
 
+    public double CalculatePay(Paycheck pc) {
+        return itsSalary;
+    }
 }
