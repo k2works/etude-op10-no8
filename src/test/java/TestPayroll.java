@@ -212,4 +212,20 @@ public class TestPayroll extends TestCase{
         BiweeklySchedule bs = (BiweeklySchedule) ps;
         assertNotNull(bs);
     }
+
+    public void testChangeMailTransaction() {
+        System.err.println("TestChangeMailTransaction");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        t.Execute();
+        ChangeMailTransaction cmt = new ChangeMailTransaction(empId, "4080 El Cerrito Road");
+        cmt.Execute();
+        Employee e = PayrollDatabase.GetEmployee(empId);
+        assertNotNull(e);
+        PaymentMethod pm = e.GetMethod();
+        assertNotNull(pm);
+        MailMethod mm = (MailMethod) pm;
+        assertNotNull(mm);
+        assertEquals("4080 El Cerrito Road", mm.GetAddress());
+    }
 }
