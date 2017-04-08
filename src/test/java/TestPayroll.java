@@ -431,6 +431,30 @@ public class TestPayroll extends TestCase{
         ValidatePaycheck(pt, empId, payDate, 2500.0 + .032 * 13000 + .032 * 24000);
     }
 
+    public void testPaySingleCommissionedEmployeeSpanMultiplePayPeriods() {
+        System.err.println("testPaySingleCommissionedEmployeeSpanMultiplePayPeriods");
+        int empId = 3;
+        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, .032);
+        t.Execute();
+        Calendar earlyDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9); // Previous
+        // pay
+        // period
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 23); // Biweekly
+        // Friday
+        Calendar lateDate = new GregorianCalendar(2001, Calendar.DECEMBER, 7); // Next
+        // pay
+        // period
+        SalesReceiptTransaction srt = new SalesReceiptTransaction(payDate, 13000, empId);
+        srt.Execute();
+        SalesReceiptTransaction srt2 = new SalesReceiptTransaction(earlyDate, 24000, empId);
+        srt2.Execute();
+        SalesReceiptTransaction srt3 = new SalesReceiptTransaction(lateDate, 15000, empId);
+        srt3.Execute();
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        ValidatePaycheck(pt, empId, payDate, 2500.0 + .032 * 13000);
+    }
+
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
