@@ -333,6 +333,19 @@ public class TestPayroll extends TestCase{
         ValidatePaycheck(pt,empId,payDate,30.5);
     }
 
+    public void testPaySingleHourlyEmployeeOvertimeOneTimeCard() {
+        System.err.println("TestPaySingleHourlyEmployeeOvertimeOneTimeCard");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId,"Bill","Home",15.25);
+        t.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
+        TimeCardTransaction tc = new TimeCardTransaction(payDate,9.0, empId);
+        tc.Execute();
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        ValidatePaycheck(pt,empId,payDate,(8 + 1.5) * 15.25);
+    }
+
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
