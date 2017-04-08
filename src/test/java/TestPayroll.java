@@ -403,6 +403,19 @@ public class TestPayroll extends TestCase{
         ValidatePaycheck(pt, empId, payDate, 2500.00);
     }
 
+    public void testPaySingleCommissionedEmployeeOneSalesReceipt() {
+        System.err.println("TestPaySingleCommissionedEmployeeOneSalesReceipt");
+        int empId = 3;
+        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, .032);
+        t.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
+        SalesReceiptTransaction srt = new SalesReceiptTransaction(payDate, 13000.0, empId);
+        srt.Execute();
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        ValidatePaycheck(pt, empId, payDate, 2500.0 + .032 * 13000);
+    }
+
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
