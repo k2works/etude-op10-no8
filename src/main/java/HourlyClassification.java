@@ -1,3 +1,4 @@
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -5,11 +6,11 @@ import java.util.Map;
  * Created by k2works on 2017/04/06.
  */
 public class HourlyClassification implements  PaymentClassification {
-    private Map<Long, TimeCard> itsTimeCards;
+    private Map<Calendar, TimeCard> itsTimeCards;
     private double itsHourlyRate;
 
     public HourlyClassification(double hourlyRate) {
-        itsTimeCards = new HashMap<Long, TimeCard>();
+        itsTimeCards = new HashMap<Calendar, TimeCard>();
         itsHourlyRate = hourlyRate;
     }
 
@@ -17,7 +18,7 @@ public class HourlyClassification implements  PaymentClassification {
         return itsHourlyRate;
     }
 
-    public TimeCard GetTimeCard(long date) {
+    public TimeCard GetTimeCard(Calendar date) {
         return itsTimeCards.get(date);
     }
 
@@ -26,6 +27,16 @@ public class HourlyClassification implements  PaymentClassification {
     }
 
     public double CalculatePay(Paycheck pc) {
-        return 0;
+        double totalPay = 0;
+        for (TimeCard tc : itsTimeCards.values()) {
+            if (Date.IsBetween(tc.GetDate(), pc.GetPayPeriodStartDate(),pc.GetPayPeriodEndDate())) {
+                if(8 < tc.GetHours()) {
+                    totalPay += itsHourlyRate * 8 + itsHourlyRate * (tc.GetHours() - 8) * 1.5;
+                } else {
+                    totalPay += itsHourlyRate * tc.GetHours();
+                }
+            }
+        }
+        return totalPay;
     }
 }

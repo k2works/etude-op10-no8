@@ -27,6 +27,10 @@ public class Paycheck {
         itsNetPay = netPay;
     }
 
+    public Calendar GetPayPeriodStartDate() {
+        return itsPayPeriodStartDate;
+    }
+
     public Calendar GetPayPeriodEndDate() {
         return itsPayPeriodEndDate;
     }

@@ -86,14 +86,15 @@ public class TestPayroll extends TestCase{
         int empId = 2;
         AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
         t.Execute();
-        TimeCardTransaction tct = new TimeCardTransaction(20011031,8.0,empId);
+        Calendar date = new GregorianCalendar(2001, Calendar.OCTOBER, 31);
+        TimeCardTransaction tct = new TimeCardTransaction(date,8.0,empId);
         tct.Execute();
         Employee e = PayrollDatabase.GetEmployee(empId);
         assertNotNull(e);
         PaymentClassification pc = e.GetClassification();
         HourlyClassification hc = (HourlyClassification) pc;
         assertNotNull(hc);
-        TimeCard tc = hc.GetTimeCard(20011031);
+        TimeCard tc = hc.GetTimeCard(date);
         assertNotNull(tc);
         assertEquals(8.0, tc.GetHours());
     }
@@ -120,7 +121,8 @@ public class TestPayroll extends TestCase{
         int empId = 2;
         AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill","Home",15.25);
         t.Execute();
-        TimeCardTransaction tct = new TimeCardTransaction(20011031,8.0, empId);
+        Calendar date = new GregorianCalendar(2001, Calendar.OCTOBER, 31);
+        TimeCardTransaction tct = new TimeCardTransaction(date,8.0, empId);
         tct.Execute();
         Employee e = PayrollDatabase.GetEmployee(empId);
         assertNotNull(e);
@@ -316,6 +318,19 @@ public class TestPayroll extends TestCase{
         PaydayTransaction pt = new PaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 0.0);
+    }
+
+    public void testPaySingleHourlyEmployeeOneTimeCard() {
+        System.err.println("TestPaySingleHourlyEmployeeOneTimeCard");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId,"Bill","Home",15.25);
+        t.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
+        TimeCardTransaction tc = new TimeCardTransaction(payDate, 2.0, empId);
+        tc.Execute();
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        ValidatePaycheck(pt,empId,payDate,30.5);
     }
 
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
