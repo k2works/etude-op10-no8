@@ -1,3 +1,4 @@
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,12 +8,12 @@ import java.util.Map;
 public class CommissionedClassification implements PaymentClassification {
     private double itsSalary;
     private double itsCommissionRate;
-    private Map<Long, SalesReceipt> itsReceipts;
+    private Map<Calendar, SalesReceipt> itsReceipts;
 
     public CommissionedClassification(double salary, double commissionRate) {
         itsSalary = salary;
         itsCommissionRate = commissionRate;
-        itsReceipts = new HashMap<Long, SalesReceipt>();
+        itsReceipts = new HashMap<Calendar, SalesReceipt>();
     }
 
     public double GetSalary() {
@@ -27,11 +28,17 @@ public class CommissionedClassification implements PaymentClassification {
         itsReceipts.put(sr.GetSaleDate(),sr);
     }
 
-    public SalesReceipt GetReceipt(long date) {
+    public SalesReceipt GetReceipt(Calendar date) {
         return itsReceipts.get(date);
     }
 
     public double CalculatePay(Paycheck pc) {
-        return 0;
+        double commission = 0.0;
+        for (SalesReceipt receipt : itsReceipts.values()) {
+            if (Date.IsBetween(receipt.GetSaleDate(), pc.GetPayPeriodStartDate(),pc.GetPayPeriodEndDate())) {
+                commission += receipt.GetAmount() * itsCommissionRate;
+            }
+        }
+        return itsSalary + commission;
     }
 }

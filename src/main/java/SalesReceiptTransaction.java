@@ -1,12 +1,14 @@
+import java.util.Calendar;
+
 /**
  * Created by k2works on 2017/04/06.
  */
 public class SalesReceiptTransaction implements Transaction {
-    private long itsSaleDate;
+    private Calendar itsSaleDate;
     private double itsAmount;
     private int itsEmpId;
 
-    public SalesReceiptTransaction(long saleDate, double amount, int empId) {
+    public SalesReceiptTransaction(Calendar saleDate, double amount, int empId) {
         itsSaleDate = saleDate;
         itsAmount = amount;
         itsEmpId = empId;
