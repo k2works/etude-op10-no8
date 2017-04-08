@@ -307,6 +307,17 @@ public class TestPayroll extends TestCase{
         assertNull(pc);
     }
 
+    public void testPaySingleHourlyEmployeeNoTimeCards() {
+        System.err.println("TestPaySingleHourlyEmployeeNoTimeCards");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId,"Bill","Home",15.25);
+        t.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        ValidatePaycheck(pt, empId, payDate, 0.0);
+    }
+
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
