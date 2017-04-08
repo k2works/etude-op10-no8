@@ -360,6 +360,22 @@ public class TestPayroll extends TestCase{
         assertNull(pc);
     }
 
+    public void testPaySingleHourlyEmployeeTwoTimeCards() {
+        System.err.println("TestPaySingleHourlyEmployeeTwoTimeCards");
+        int empId = 2;
+        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        t.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
+        TimeCardTransaction tc = new TimeCardTransaction(payDate, 2.0, empId);
+        tc.Execute();
+        TimeCardTransaction tc2 = new TimeCardTransaction(new GregorianCalendar(2001, Calendar.NOVEMBER,8), 5.0, empId);
+        tc2.Execute();
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        ValidatePaycheck(pt, empId,payDate,7 * 15.25);
+    }
+
+
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
