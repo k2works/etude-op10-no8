@@ -3,6 +3,19 @@ import junit.framework.TestCase;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import AffiliationTransactions.*;
+import Affiliations.*;
+import ClassificationTransactions.*;
+import Classifications.*;
+import GeneralTransactions.*;
+import MethodTransactions.*;
+import Methods.*;
+import PayrollDatabase.*;
+import PayrollDatabaseImplementation.*;
+import PayrollDomain.*;
+import Schedules.*;
+
+
 /**
  * Created by k2works on 2017/04/06.
  */
@@ -472,7 +485,7 @@ public class TestPayroll extends TestCase{
         assertEquals(pc.GetPayPeriodEndDate(), payDate);
         assertEquals(1000.0,pc.GetGrossPay());
         assertEquals("Hold", pc.GetField("Disposition"));
-        assertEquals(fridays * 9.42, pc.GetDeducations());
+        assertEquals(fridays * 9.42, pc.GetDeductions());
         assertEquals(1000.0 - fridays * 9.42, pc.GetNetPay());
     }
 
@@ -494,7 +507,7 @@ public class TestPayroll extends TestCase{
         assertEquals(pc.GetPayPeriodEndDate(),payDate);
         assertEquals(8 * 15.24, pc.GetGrossPay());
         assertEquals("Hold", pc.GetField("Disposition"));
-        assertEquals(9.42, pc.GetDeducations());
+        assertEquals(9.42, pc.GetDeductions());
         assertEquals(8 * 15.24 - 9.42, pc.GetNetPay());
     }
 
@@ -514,7 +527,7 @@ public class TestPayroll extends TestCase{
         assertEquals(pc.GetPayPeriodEndDate(),payDate);
         assertEquals(2500.0, pc.GetGrossPay());
         assertEquals("Hold", pc.GetField("Disposition"));
-        assertEquals(2 * 9.42, pc.GetDeducations());
+        assertEquals(2 * 9.42, pc.GetDeductions());
         assertEquals(2500.0 - 2 * 9.42, pc.GetNetPay());
     }
 
@@ -538,7 +551,7 @@ public class TestPayroll extends TestCase{
         assertEquals(pc.GetPayPeriodEndDate(), payDate);
         assertEquals(8 * 15.24, pc.GetGrossPay());
         assertEquals("Hold", pc.GetField("Disposition"));
-        assertEquals(9.42 + 19.42, pc.GetDeducations());
+        assertEquals(9.42 + 19.42, pc.GetDeductions());
         assertEquals(8 * 15.24 - (9.42 + 19.42), pc.GetNetPay());
     }
 
@@ -570,7 +583,7 @@ public class TestPayroll extends TestCase{
         assertEquals(pc.GetPayPeriodEndDate(), payDate);
         assertEquals(8 * 15.24, pc.GetGrossPay());
         assertEquals("Hold", pc.GetField("Disposition"));
-        assertEquals(9.42 + 19.42, pc.GetDeducations());
+        assertEquals(9.42 + 19.42, pc.GetDeductions());
         assertEquals(8 * 15.24 - (9.42 + 19.42), pc.GetNetPay());
     }
 
@@ -580,7 +593,7 @@ public class TestPayroll extends TestCase{
         assertEquals(pc.GetPayPeriodEndDate(), payDate);
         assertEquals(pay, pc.GetGrossPay());
         assertEquals("Hold", pc.GetField("Disposition"));
-        assertEquals(0.0, pc.GetDeducations());
+        assertEquals(0.0, pc.GetDeductions());
         assertEquals(pay, pc.GetNetPay());
     }
 }
