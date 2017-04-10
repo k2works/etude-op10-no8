@@ -9,7 +9,7 @@ public abstract class ChangeEmployeeTransaction implements Transaction {
     }
 
     public void Execute() {
-        Employee e = PayrollDatabase.GetEmployee(itsEmpId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(itsEmpId);
         if (e != null) {
             Change(e);
         }

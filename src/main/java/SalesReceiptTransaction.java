@@ -15,7 +15,7 @@ public class SalesReceiptTransaction implements Transaction {
     }
 
     public void Execute() {
-        Employee e = PayrollDatabase.GetEmployee(itsEmpId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(itsEmpId);
         if (e != null) {
             PaymentClassification pc = e.GetClassification();
             if (pc instanceof CommissionedClassification) {

@@ -15,7 +15,7 @@ public class ChangeUnaffiliatedTransaction extends ChangeAffiliationTransaction 
         if (af instanceof UnionAffiliation) {
             UnionAffiliation uf = (UnionAffiliation) af;
             int memberId = uf.GetMemberId();
-            PayrollDatabase.RemoveUnionMember(memberId);
+            GlobalDatabase.payrollDB.RemoveUnionMember(memberId);
         }
     }
 }

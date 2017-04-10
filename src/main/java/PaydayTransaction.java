@@ -15,9 +15,9 @@ public class PaydayTransaction implements Transaction {
     }
 
     public void Execute() {
-        List<Integer> empIds = PayrollDatabase.GetAllEmployeeIds();
+        List<Integer> empIds = GlobalDatabase.payrollDB.GetAllEmployeeIds();
         for(int empId : empIds) {
-            Employee e = PayrollDatabase.GetEmployee(empId);
+            Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
             if(e.IsPayDate(itsPayDate)) {
                 Paycheck pc = new Paycheck(e.GetPayPeriodStartDate(itsPayDate),itsPayDate);
                 itsPaychecks.put(empId, pc);

@@ -6,35 +6,20 @@ import java.util.Map;
 /**
  * Created by k2works on 2017/04/06.
  */
-class PayrollDatabase {
-    private static Map<Integer, Employee> itsEmployees = new HashMap<Integer, Employee>();
-    private static Map<Integer, Employee> itsUnionMembers = new HashMap<Integer, Employee>();
+public interface PayrollDatabase {
+    public void AddEmployee(int empId, Employee e);
 
-    public static void AddEmployee(int empId, Employee e) {
-        itsEmployees.put(empId, e);
-    }
+    public Employee GetEmployee(int empId);
 
-    public static Employee GetEmployee(int empId) {
-        return itsEmployees.get(empId);
-    }
+    public void Clear();
 
-    public static void DeleteEmployee(int empId) {
-        itsEmployees.remove(empId);
-    }
+    public void DeleteEmployee(int empId);
 
-    public static void AddUnionMember(int memberId, Employee e) {
-        itsUnionMembers.put(memberId, e);
-    }
+    public void AddUnionMember(int memberId, Employee e);
 
-    public static Employee GetUnionMbember(int memberId) {
-        return itsUnionMembers.get(memberId);
-    }
+    public Employee GetUnionMember(int memberId);
 
-    public static void RemoveUnionMember(int memberId) {
-        itsUnionMembers.remove(memberId);
-    }
+    public void RemoveUnionMember(int memberId);
 
-    public static List<Integer> GetAllEmployeeIds() {
-        return new ArrayList<Integer>(itsEmployees.keySet());
-    }
+    public List<Integer> GetAllEmployeeIds();
 }

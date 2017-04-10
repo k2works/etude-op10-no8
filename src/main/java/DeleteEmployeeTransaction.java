@@ -8,6 +8,6 @@ public class DeleteEmployeeTransaction implements Transaction {
     }
 
     public void Execute() {
-        PayrollDatabase.DeleteEmployee(itsEmpId);
+        GlobalDatabase.payrollDB.DeleteEmployee(itsEmpId);
     }
 }

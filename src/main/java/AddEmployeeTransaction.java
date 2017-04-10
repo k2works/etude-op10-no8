@@ -20,7 +20,7 @@ public abstract class AddEmployeeTransaction implements Transaction {
         e.SetClassification(pc);
         e.SetSchedule(ps);
         e.SetMethod(pm);
-        PayrollDatabase.AddEmployee(itsEmpId, e);
+        GlobalDatabase.payrollDB.AddEmployee(itsEmpId, e);
     }
 
     abstract PaymentSchedule GetSchedule();

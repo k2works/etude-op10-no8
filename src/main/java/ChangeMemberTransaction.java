@@ -16,6 +16,6 @@ public class ChangeMemberTransaction extends ChangeAffiliationTransaction {
     }
 
     void RecordMembership(Employee e) {
-        PayrollDatabase.AddUnionMember(itsMemberId, e);
+        GlobalDatabase.payrollDB.AddUnionMember(itsMemberId, e);
     }
 }

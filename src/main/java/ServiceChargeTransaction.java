@@ -15,7 +15,7 @@ public class ServiceChargeTransaction implements Transaction {
     }
 
     public void Execute() {
-        Employee e = PayrollDatabase.GetUnionMbember(itsMemberId);
+        Employee e = GlobalDatabase.payrollDB.GetUnionMember(itsMemberId);
         Affiliation af = e.GetAffiliation();
         if (af instanceof UnionAffiliation) {
             UnionAffiliation uaf = (UnionAffiliation) af;

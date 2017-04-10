@@ -12,7 +12,7 @@ public class TestPayroll extends TestCase{
         int empId = 1;
         AddSalariedEmployee t = new AddSalariedEmployee(empId, "Bob", "Home", 1000.00);
         t.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         assertEquals("Bob", e.GetName());
         PaymentClassification pc = e.GetClassification();
@@ -32,7 +32,7 @@ public class TestPayroll extends TestCase{
         int empId = 2;
         AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
         t.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         assertEquals("Bill", e.GetName());
         PaymentClassification pc = e.GetClassification();
@@ -52,7 +52,7 @@ public class TestPayroll extends TestCase{
         int empId = 1;
         AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500.0, 3.2);
         t.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         assertEquals("Lance", e.GetName());
         PaymentClassification pc = e.GetClassification();
@@ -73,11 +73,11 @@ public class TestPayroll extends TestCase{
         int empId = 3;
         AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance","Home",2500,3.2);
         t.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         DeleteEmployeeTransaction dt = new DeleteEmployeeTransaction(empId);
         dt.Execute();
-        e = PayrollDatabase.GetEmployee(empId);
+        e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNull(e);
     }
 
@@ -89,7 +89,7 @@ public class TestPayroll extends TestCase{
         Calendar date = new GregorianCalendar(2001, Calendar.OCTOBER, 31);
         TimeCardTransaction tct = new TimeCardTransaction(date,8.0,empId);
         tct.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         PaymentClassification pc = e.GetClassification();
         HourlyClassification hc = (HourlyClassification) pc;
@@ -107,7 +107,7 @@ public class TestPayroll extends TestCase{
         Calendar date = new GregorianCalendar(2001, Calendar.NOVEMBER, 12);
         SalesReceiptTransaction srt = new SalesReceiptTransaction(date, 25000, empId);
         srt.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         PaymentClassification pc = e.GetClassification();
         CommissionedClassification cc = (CommissionedClassification) pc;
@@ -125,12 +125,12 @@ public class TestPayroll extends TestCase{
         Calendar date = new GregorianCalendar(2001, Calendar.OCTOBER, 31);
         TimeCardTransaction tct = new TimeCardTransaction(date,8.0, empId);
         tct.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         Affiliation af = new UnionAffiliation(12.5);
         e.SetAffiliation(af);
         int memberId = 86;
-        PayrollDatabase.AddUnionMember(memberId,e);
+        GlobalDatabase.payrollDB.AddUnionMember(memberId,e);
         ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId, date, 12.95);
         sct.Execute();
         double sc = af.GetServiceCharge(date);
@@ -144,7 +144,7 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeNameTransaction cnt = new ChangeNameTransaction(empId, "Bob");
         cnt.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         assertEquals("Bob", e.GetName());
     }
@@ -156,7 +156,7 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeAddressTransaction cat = new ChangeAddressTransaction(empId, "Second Home");
         cat.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         assertEquals("Second Home", e.GetAddress());
     }
@@ -168,7 +168,7 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeHourlyTransaction cht = new ChangeHourlyTransaction(empId, 27.52);
         cht.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         PaymentClassification pc = e.GetClassification();
         assertNotNull(pc);
@@ -187,7 +187,7 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeSalariedTransaction cst = new ChangeSalariedTransaction(empId, 25000);
         cst.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         PaymentClassification pc = e.GetClassification();
         assertNotNull(pc);
@@ -206,7 +206,7 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeCommissionedTransaction cct = new ChangeCommissionedTransaction(empId, 25000, 4.5);
         cct.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         PaymentClassification pc = e.GetClassification();
         assertNotNull(pc);
@@ -226,7 +226,7 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeMailTransaction cmt = new ChangeMailTransaction(empId, "4080 El Cerrito Road");
         cmt.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         PaymentMethod pm = e.GetMethod();
         assertNotNull(pm);
@@ -242,7 +242,7 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeDirectTransaction cdt = new ChangeDirectTransaction(empId, "FirstNational", "1058209");
         cdt.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         PaymentMethod pm = e.GetMethod();
         assertNotNull(pm);
@@ -259,7 +259,7 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeHoldTransaction cht = new ChangeHoldTransaction(empId);
         cht.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         PaymentMethod pm = e.GetMethod();
         assertNotNull(pm);
@@ -275,14 +275,14 @@ public class TestPayroll extends TestCase{
         t.Execute();
         ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 99.42);
         cmt.Execute();
-        Employee e = PayrollDatabase.GetEmployee(empId);
+        Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
         Affiliation af = e.GetAffiliation();
         assertNotNull(af);
         UnionAffiliation uf = (UnionAffiliation) af;
         assertNotNull(uf);
         assertEquals(99.42, uf.GetDues());
-        Employee member = PayrollDatabase.GetUnionMbember(memberId);
+        Employee member = GlobalDatabase.payrollDB.GetUnionMember(memberId);
         assertNotNull(member);
         assertEquals(e,member);
     }
