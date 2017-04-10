@@ -131,9 +131,9 @@ public class TestPayroll extends TestCase{
         e.SetAffiliation(af);
         int memberId = 86;
         PayrollDatabase.AddUnionMember(memberId,e);
-        ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId, 20011031, 12.95);
+        ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId, date, 12.95);
         sct.Execute();
-        double sc = af.GetServiceCharge(20011031);
+        double sc = af.GetServiceCharge(date);
         assertEquals(12.95, sc, .001);
     }
 
@@ -453,6 +453,27 @@ public class TestPayroll extends TestCase{
         PaydayTransaction pt = new PaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 2500.0 + .032 * 13000);
+    }
+
+    public void testSalariedUnionMemberDues() {
+        System.err.println("TestSalariedUnionMemberDues");
+        int empId = 1;
+        AddSalariedEmployee t = new AddSalariedEmployee(empId, "Bob","Home",1000.0);
+        t.Execute();
+        int memberId = 7734;
+        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId,9.42);
+        cmt.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 30);
+        int fridays = 5; // Fridays in Nov, 2001.
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        Paycheck pc = pt.GetPaycheck(empId);
+        assertNotNull(pc);
+        assertEquals(pc.GetPayPeriodEndDate(), payDate);
+        assertEquals(1000.0,pc.GetGrossPay());
+        assertEquals("Hold", pc.GetField("Disposition"));
+        assertEquals(fridays * 9.42, pc.GetDeducations());
+        assertEquals(1000.0 - fridays * 9.42, pc.GetNetPay());
     }
 
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {

@@ -1,3 +1,4 @@
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -5,7 +6,7 @@ import java.util.Map;
  * Created by k2works on 2017/04/06.
  */
 public class UnionAffiliation implements Affiliation {
-    private Map<Long, ServiceCharge> itsServiceCharges = new HashMap<Long, ServiceCharge>();
+    private Map<Calendar, ServiceCharge> itsServiceCharges = new HashMap<Calendar, ServiceCharge>();
     private int itsMemberId;
     private double itsDues;
 
@@ -18,7 +19,7 @@ public class UnionAffiliation implements Affiliation {
         itsDues = dues;
     }
 
-    public double GetServiceCharge(long date) {
+    public double GetServiceCharge(Calendar date) {
         if (itsServiceCharges.get(date) == null) {
             return 0;
         }
@@ -26,10 +27,32 @@ public class UnionAffiliation implements Affiliation {
     }
 
     public double CalculateDeductions(Paycheck pc) {
-        return 0;
+        double totalServiceCharge = 0;
+        double totalDues = 0;
+        for (ServiceCharge sc : itsServiceCharges.values()) {
+            if (Date.IsBetween(sc.GetDate(), pc.GetPayPeriodStartDate(),pc.GetPayPeriodEndDate())) {
+                totalServiceCharge += sc.GetAmount();
+            }
+        }
+        int fridays = NumberOfFridaysInPayPeriod(pc.GetPayPeriodStartDate(),pc.GetPayPeriodEndDate());
+        totalDues = itsDues * fridays;
+        return totalDues + totalServiceCharge;
     }
 
-    public void AddServiceCharge(long date, double amount) {
+    private int NumberOfFridaysInPayPeriod(Calendar payPeriodStart, Calendar payPeriodEnd) {
+        int fridays = 0;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(payPeriodStart.getTime());
+        while (cal.compareTo(payPeriodEnd) <= 0) {
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+                fridays++;
+            }
+            cal.add(Calendar.DATE,1);
+        }
+        return fridays;
+    }
+
+    public void AddServiceCharge(Calendar date, double amount) {
         itsServiceCharges.put(date, new ServiceCharge(date, amount));
     }
 

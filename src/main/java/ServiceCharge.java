@@ -1,16 +1,18 @@
+import java.util.Calendar;
+
 /**
  * Created by k2works on 2017/04/06.
  */
 public class ServiceCharge {
-    private long itsDate;
+    private Calendar itsDate;
     private double itsAmount;
 
-    public ServiceCharge(long date, double amount) {
+    public ServiceCharge(Calendar date, double amount) {
         itsDate = date;
         itsAmount = amount;
     }
 
-    public long GetDate() {
+    public Calendar GetDate() {
         return itsDate;
     }
 
