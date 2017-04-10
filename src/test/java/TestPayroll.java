@@ -498,6 +498,26 @@ public class TestPayroll extends TestCase{
         assertEquals(8 * 15.24 - 9.42, pc.GetNetPay());
     }
 
+    public void testCommissionedUnionMemberDues() {
+        System.err.println("TestCommissionedUnionMemberDues");
+        int empId = 3;
+        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500,.032);
+        t.Execute();
+        int memberId = 7734;
+        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 9.42);
+        cmt.Execute();
+        Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
+        PaydayTransaction pt = new PaydayTransaction(payDate);
+        pt.Execute();
+        Paycheck pc = pt.GetPaycheck(empId);
+        assertNotNull(pc);
+        assertEquals(pc.GetPayPeriodEndDate(),payDate);
+        assertEquals(2500.0, pc.GetGrossPay());
+        assertEquals("Hold", pc.GetField("Disposition"));
+        assertEquals(2 * 9.42, pc.GetDeducations());
+        assertEquals(2500.0 - 2 * 9.42, pc.GetNetPay());
+    }
+
     private void ValidatePaycheck(PaydayTransaction pt, int empId, Calendar payDate, double pay) {
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
