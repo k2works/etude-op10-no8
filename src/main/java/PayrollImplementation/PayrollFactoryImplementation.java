@@ -2,15 +2,6 @@ package PayrollImplementation;
 
 import java.util.Calendar;
 
-import Affiliations.PaycheckImplementation;
-import Affiliations.UnionAffiliation;
-import Classifications.CommissionedClassification;
-import Classifications.HourlyClassification;
-import Classifications.SalariedClassification;
-import Classifications.SalesReceipt;
-import Methods.DirectMethod;
-import Methods.HoldMethod;
-import Methods.MailMethod;
 import PayrollDomain.Affiliation;
 import PayrollDomain.Employee;
 import PayrollDomain.NoAffiliation;
@@ -19,9 +10,6 @@ import PayrollDomain.PaymentClassification;
 import PayrollDomain.PaymentMethod;
 import PayrollDomain.PaymentSchedule;
 import PayrollFactory.PayrollFactory;
-import Schedules.BiweeklySchedule;
-import Schedules.MonthlySchedule;
-import Schedules.WeeklySchedule;
 
 /**
  * Created by k2works on 2017/04/10.

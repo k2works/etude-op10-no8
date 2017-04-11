@@ -2,8 +2,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import Application.Application;
-import Classifications.HourlyClassification;
-import Classifications.TimeCard;
+import PayrollImplementation.HourlyClassification;
+import PayrollImplementation.TimeCard;
 import PayrollApplication.PayrollApplication;
 import PayrollDatabase.GlobalDatabase;
 import PayrollDatabaseImplementation.PayrollDatabaseImplementation;

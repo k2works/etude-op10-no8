@@ -2,14 +2,6 @@ package TransactionImplementation;
 
 import java.util.Calendar;
 
-import AffiliationTransactions.ChangeMemberTransaction;
-import AffiliationTransactions.ChangeUnaffiliatedTransaction;
-import AffiliationTransactions.ServiceChargeTransaction;
-import ClassificationTransactions.*;
-import GeneralTransactions.*;
-import MethodTransactions.ChangeDirectTransaction;
-import MethodTransactions.ChangeHoldTransaction;
-import MethodTransactions.ChangeMailTransaction;
 import PayrollFactory.PayrollFactory;
 import TransactionApplication.Transaction;
 import TransactionFactory.TransactionFactory;

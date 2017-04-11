@@ -1,20 +1,12 @@
-import PayrollImplementation.PayrollFactoryImplementation;
-import TransactionImplementation.TransactionFactoryImplementation;
+import PayrollImplementation.*;
+import TransactionImplementation.*;
 import junit.framework.TestCase;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import AffiliationTransactions.*;
-import Affiliations.*;
-import ClassificationTransactions.*;
-import Classifications.*;
-import GeneralTransactions.*;
-import MethodTransactions.*;
-import Methods.*;
 import PayrollDatabase.*;
 import PayrollDomain.*;
-import Schedules.*;
 import PayrollFactory.PayrollFactory;
 import PayrollDatabaseImplementation.PayrollDatabaseImplementation;
 
