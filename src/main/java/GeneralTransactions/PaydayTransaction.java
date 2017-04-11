@@ -10,6 +10,7 @@ import PayrollDatabase.GlobalDatabase;
 import PayrollDomain.Employee;
 import PayrollDomain.Paycheck;
 import TransactionApplication.Transaction;
+import PayrollFactory.PayrollFactory;
 
 /**
  * Created by k2works on 2017/04/07.
@@ -17,9 +18,11 @@ import TransactionApplication.Transaction;
 public class PaydayTransaction implements Transaction {
     private Calendar itsPayDate;
     private Map<Integer, Paycheck> itsPaychecks = new HashMap<Integer, Paycheck>();
+    private PayrollFactory itsPayrollFactory;
 
-    public PaydayTransaction(Calendar payDate) {
+    public PaydayTransaction(Calendar payDate, PayrollFactory payrollFactory) {
         itsPayDate = payDate;
+        itsPayrollFactory = payrollFactory;
     }
 
     public void Execute() {

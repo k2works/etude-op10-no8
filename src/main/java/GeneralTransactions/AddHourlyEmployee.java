@@ -3,6 +3,7 @@ package GeneralTransactions;
 import Classifications.HourlyClassification;
 import PayrollDomain.PaymentClassification;
 import PayrollDomain.PaymentSchedule;
+import PayrollFactory.PayrollFactory;
 import Schedules.WeeklySchedule;
 
 /**
@@ -11,8 +12,8 @@ import Schedules.WeeklySchedule;
 public class AddHourlyEmployee extends AddEmployeeTransaction {
     private double itsHourlyRate;
 
-    public AddHourlyEmployee(int empId, String name, String address, double hourlyRate) {
-        super(empId, name, address);
+    public AddHourlyEmployee(int empId, String name, String address, double hourlyRate, PayrollFactory payrollFactory) {
+        super(empId, name, address, payrollFactory);
         itsHourlyRate = hourlyRate;
     }
 

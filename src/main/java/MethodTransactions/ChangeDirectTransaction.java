@@ -2,6 +2,7 @@ package MethodTransactions;
 
 import Methods.DirectMethod;
 import PayrollDomain.PaymentMethod;
+import PayrollFactory.PayrollFactory;
 
 /**
  * Created by k2works on 2017/04/07.
@@ -9,11 +10,13 @@ import PayrollDomain.PaymentMethod;
 public class ChangeDirectTransaction extends ChangeMethodTransaction {
     private String itsBank;
     private String itsAccount;
+    private PayrollFactory itsPayrollFactory;
 
-    public ChangeDirectTransaction(int empId, String bank, String account) {
+    public ChangeDirectTransaction(int empId, String bank, String account, PayrollFactory payrollFactory) {
         super(empId);
         itsBank = bank;
         itsAccount = account;
+        itsPayrollFactory = payrollFactory;
     }
 
     PaymentMethod GetMethod() {

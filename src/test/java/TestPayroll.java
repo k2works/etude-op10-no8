@@ -1,3 +1,5 @@
+import PayrollImplementation.PayrollFactoryImplementation;
+import TransactionImplementation.TransactionFactoryImplementation;
 import junit.framework.TestCase;
 
 import java.util.Calendar;
@@ -11,19 +13,27 @@ import GeneralTransactions.*;
 import MethodTransactions.*;
 import Methods.*;
 import PayrollDatabase.*;
-import PayrollDatabaseImplementation.*;
 import PayrollDomain.*;
 import Schedules.*;
-
+import PayrollFactory.PayrollFactory;
+import PayrollDatabaseImplementation.PayrollDatabaseImplementation;
 
 /**
  * Created by k2works on 2017/04/06.
  */
 public class TestPayroll extends TestCase{
+    private static TransactionFactoryImplementation itsTransactionFactory;
+
+    public void setUp() {
+        GlobalDatabase.payrollDB = new PayrollDatabaseImplementation();
+        PayrollFactory payrollFactory = new PayrollFactoryImplementation();
+        itsTransactionFactory = new TransactionFactoryImplementation(payrollFactory);
+    }
+
     public void testAddSalariedEmployee() {
         System.err.println("TestAddSalariedEmployee");
         int empId = 1;
-        AddSalariedEmployee t = new AddSalariedEmployee(empId, "Bob", "Home", 1000.00);
+        AddSalariedEmployee t = makeSalariedEmployee(empId, 1000.00);
         t.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -43,7 +53,7 @@ public class TestPayroll extends TestCase{
     public void testAddHourlyEmployee() {
         System.err.println("TestAddHourlyEmployee");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -63,7 +73,7 @@ public class TestPayroll extends TestCase{
     public void testAddCommissionedEmployee() {
         System.err.println("TestAddCommissionedEmployee");
         int empId = 1;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500.0, 3.2);
+        AddCommissionedEmployee t = makeCommissionedEmployee(empId);
         t.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -84,7 +94,7 @@ public class TestPayroll extends TestCase{
     public void testDeleteEmployee() {
         System.err.println("TestDeleteEmployee");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance","Home",2500,3.2);
+        AddCommissionedEmployee t = makeCommissionedEmployee(empId);
         t.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -97,7 +107,7 @@ public class TestPayroll extends TestCase{
     public void testTimeCardTransaction() {
         System.err.println("TestTimeCardTransaction");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Calendar date = new GregorianCalendar(2001, Calendar.OCTOBER, 31);
         TimeCardTransaction tct = new TimeCardTransaction(date,8.0,empId);
@@ -115,7 +125,7 @@ public class TestPayroll extends TestCase{
     public void testSalesReceiptTransaction() {
         System.err.println("TestSalesReceiptTransaction");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, 3.2);
+        AddCommissionedEmployee t = makeCommissionedEmployee(empId);
         t.Execute();
         Calendar date = new GregorianCalendar(2001, Calendar.NOVEMBER, 12);
         SalesReceiptTransaction srt = new SalesReceiptTransaction(date, 25000, empId);
@@ -133,7 +143,7 @@ public class TestPayroll extends TestCase{
     public void testAddServiceCharge() {
         System.err.println("TestAddServiceCharge");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill","Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Calendar date = new GregorianCalendar(2001, Calendar.OCTOBER, 31);
         TimeCardTransaction tct = new TimeCardTransaction(date,8.0, empId);
@@ -153,7 +163,7 @@ public class TestPayroll extends TestCase{
     public void testChangeNameTransaction() {
         System.err.println("TestChangeNameTransaction");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         ChangeNameTransaction cnt = new ChangeNameTransaction(empId, "Bob");
         cnt.Execute();
@@ -165,7 +175,7 @@ public class TestPayroll extends TestCase{
     public void testChangeAddressTransaction() {
         System.err.println("TestChangeAddressTransaction");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         ChangeAddressTransaction cat = new ChangeAddressTransaction(empId, "Second Home");
         cat.Execute();
@@ -177,9 +187,9 @@ public class TestPayroll extends TestCase{
     public void testChangeHourlyTransaction() {
         System.err.println("TestChangeHourlyTransaction");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home",2500,3.2);
+        AddCommissionedEmployee t = makeCommissionedEmployee(empId);
         t.Execute();
-        ChangeHourlyTransaction cht = new ChangeHourlyTransaction(empId, 27.52);
+        ChangeHourlyTransaction cht = makeChangeHourlyTransaction(empId);
         cht.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -196,9 +206,9 @@ public class TestPayroll extends TestCase{
     public void testChangeSalariedTransaction() {
         System.err.println("TestChangeSalariedTransaction");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, 3.2);
+        AddCommissionedEmployee t = makeCommissionedEmployee(empId);
         t.Execute();
-        ChangeSalariedTransaction cst = new ChangeSalariedTransaction(empId, 25000);
+        ChangeSalariedTransaction cst = makeChangeSalariedTransaction(empId);
         cst.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -215,9 +225,9 @@ public class TestPayroll extends TestCase{
     public void testChangeCommissionedTransaction() {
         System.err.println("TestChangeCommissionedTransaction");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill","Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
-        ChangeCommissionedTransaction cct = new ChangeCommissionedTransaction(empId, 25000, 4.5);
+        ChangeCommissionedTransaction cct = makeChangeCommissionedTransaction(empId);
         cct.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -235,9 +245,9 @@ public class TestPayroll extends TestCase{
     public void testChangeMailTransaction() {
         System.err.println("TestChangeMailTransaction");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
-        ChangeMailTransaction cmt = new ChangeMailTransaction(empId, "4080 El Cerrito Road");
+        ChangeMailTransaction cmt = makeChangeMailTransaction(empId);
         cmt.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -251,9 +261,9 @@ public class TestPayroll extends TestCase{
     public void testChangeDirectTransaction() {
         System.err.println("TestChangeDirectTransaction");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
-        ChangeDirectTransaction cdt = new ChangeDirectTransaction(empId, "FirstNational", "1058209");
+        ChangeDirectTransaction cdt = makeChangeDirectTransaction(empId);
         cdt.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -268,9 +278,9 @@ public class TestPayroll extends TestCase{
     public void testChangeHoldTransaction() {
         System.err.println("TestChangeHoldTransaction");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
-        ChangeHoldTransaction cht = new ChangeHoldTransaction(empId);
+        ChangeHoldTransaction cht = makeChangeHoldTransaction(empId);
         cht.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -284,9 +294,9 @@ public class TestPayroll extends TestCase{
         System.err.println("TestChangeMemberTransaction");
         int empId = 2;
         int memberId = 7734;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill","Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
-        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 99.42);
+        ChangeMemberTransaction cmt = makeChangeMemberTransaction(empId, memberId, 99.42);
         cmt.Execute();
         Employee e = GlobalDatabase.payrollDB.GetEmployee(empId);
         assertNotNull(e);
@@ -303,10 +313,10 @@ public class TestPayroll extends TestCase{
     public void testPaySingleSalariedEmployee() {
         System.err.println("TestPaySingleSalariedEmployee");
         int empId = 1;
-        AddSalariedEmployee t = new AddSalariedEmployee(empId,"Bob","Home",1000.0);
+        AddSalariedEmployee t = makeSalariedEmployee(empId, 1000.0);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER,30);
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 1000.0);
     }
@@ -314,10 +324,10 @@ public class TestPayroll extends TestCase{
     public void testPaySingleSalariedEmployeeOnWrongDate() {
         System.err.println("TestPaySingleSalariedEmployeeOnWrongDate");
         int empId = 1;
-        AddSalariedEmployee t = new AddSalariedEmployee(empId,"Bob","Home",1000.0);
+        AddSalariedEmployee t = makeSalariedEmployee(empId, 1000.0);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER,29);
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         Paycheck pc = pt.GetPaycheck(empId);
         assertNull(pc);
@@ -326,10 +336,10 @@ public class TestPayroll extends TestCase{
     public void testPaySingleHourlyEmployeeNoTimeCards() {
         System.err.println("TestPaySingleHourlyEmployeeNoTimeCards");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId,"Bill","Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 0.0);
     }
@@ -337,12 +347,12 @@ public class TestPayroll extends TestCase{
     public void testPaySingleHourlyEmployeeOneTimeCard() {
         System.err.println("TestPaySingleHourlyEmployeeOneTimeCard");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId,"Bill","Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
         TimeCardTransaction tc = new TimeCardTransaction(payDate, 2.0, empId);
         tc.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt,empId,payDate,30.5);
     }
@@ -350,12 +360,12 @@ public class TestPayroll extends TestCase{
     public void testPaySingleHourlyEmployeeOvertimeOneTimeCard() {
         System.err.println("TestPaySingleHourlyEmployeeOvertimeOneTimeCard");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId,"Bill","Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
         TimeCardTransaction tc = new TimeCardTransaction(payDate,9.0, empId);
         tc.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt,empId,payDate,(8 + 1.5) * 15.25);
     }
@@ -363,12 +373,12 @@ public class TestPayroll extends TestCase{
     public void testPaySingleHourlyEmployeeOnWrongDate() {
         System.err.println("TestPaySingleHourlyEmployeeOnWrongDate");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 8);
         TimeCardTransaction tc = new TimeCardTransaction(payDate, 9.0, empId);
         tc.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         Paycheck pc = pt.GetPaycheck(empId);
         assertNull(pc);
@@ -377,14 +387,14 @@ public class TestPayroll extends TestCase{
     public void testPaySingleHourlyEmployeeTwoTimeCards() {
         System.err.println("TestPaySingleHourlyEmployeeTwoTimeCards");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
         TimeCardTransaction tc = new TimeCardTransaction(payDate, 2.0, empId);
         tc.Execute();
         TimeCardTransaction tc2 = new TimeCardTransaction(new GregorianCalendar(2001, Calendar.NOVEMBER,8), 5.0, empId);
         tc2.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId,payDate,7 * 15.25);
     }
@@ -392,7 +402,7 @@ public class TestPayroll extends TestCase{
     public void testPaySingleHourlyEmployeeWithTimeCardsSpanningTwoPayPeriods() {
         System.err.println("TestPaySingleHourlyEmployeeWithTimeCardsSpanningTwoPayPeriods");
         int empId = 2;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill","Home",15.25);
+        AddHourlyEmployee t = makeHourlyEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
         Calendar dateInPreviousPayPeriod = new GregorianCalendar(2001, Calendar.NOVEMBER, 2);
@@ -400,7 +410,7 @@ public class TestPayroll extends TestCase{
         tc.Execute();
         TimeCardTransaction tc2 = new TimeCardTransaction(dateInPreviousPayPeriod,5.0, empId);
         tc2.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 2 * 15.25);
     }
@@ -408,10 +418,10 @@ public class TestPayroll extends TestCase{
     public void testPaySingleCommissionedEmployeeNoSalesReceipts() {
         System.err.println("TestPaySingleCommissionedEmployeeNoSalesReceipts");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, 3.2);
+        AddCommissionedEmployee t = makeCommissionedEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 2500.00);
     }
@@ -419,12 +429,12 @@ public class TestPayroll extends TestCase{
     public void testPaySingleCommissionedEmployeeOneSalesReceipt() {
         System.err.println("TestPaySingleCommissionedEmployeeOneSalesReceipt");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, .032);
+        AddCommissionedEmployee t = makeAddCommissionedEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
         SalesReceiptTransaction srt = new SalesReceiptTransaction(payDate, 13000.0, empId);
         srt.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 2500.0 + .032 * 13000);
     }
@@ -432,14 +442,14 @@ public class TestPayroll extends TestCase{
     public void testPaySingleCommissionedEmployeeTwoSalesReceipts() {
         System.err.println("TestPaySingleCommissionedEmployeeTwoSalesReceipts");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, .032);
+        AddCommissionedEmployee t = makeAddCommissionedEmployee(empId);
         t.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
         SalesReceiptTransaction srt = new SalesReceiptTransaction(payDate, 13000.0, empId);
         srt.Execute();
         SalesReceiptTransaction srt2 = new SalesReceiptTransaction(new GregorianCalendar(2001, Calendar.NOVEMBER, 8), 24000, empId);
         srt2.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 2500.0 + .032 * 13000 + .032 * 24000);
     }
@@ -447,7 +457,7 @@ public class TestPayroll extends TestCase{
     public void testPaySingleCommissionedEmployeeSpanMultiplePayPeriods() {
         System.err.println("testPaySingleCommissionedEmployeeSpanMultiplePayPeriods");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500, .032);
+        AddCommissionedEmployee t = makeAddCommissionedEmployee(empId);
         t.Execute();
         Calendar earlyDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9); // Previous
         // pay
@@ -463,7 +473,7 @@ public class TestPayroll extends TestCase{
         srt2.Execute();
         SalesReceiptTransaction srt3 = new SalesReceiptTransaction(lateDate, 15000, empId);
         srt3.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         ValidatePaycheck(pt, empId, payDate, 2500.0 + .032 * 13000);
     }
@@ -471,14 +481,14 @@ public class TestPayroll extends TestCase{
     public void testSalariedUnionMemberDues() {
         System.err.println("TestSalariedUnionMemberDues");
         int empId = 1;
-        AddSalariedEmployee t = new AddSalariedEmployee(empId, "Bob","Home",1000.0);
+        AddSalariedEmployee t = makeSalariedEmployee(empId, 1000.0);
         t.Execute();
         int memberId = 7734;
-        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId,9.42);
+        ChangeMemberTransaction cmt = makeChangeMemberTransaction(empId, memberId, 9.42);
         cmt.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 30);
         int fridays = 5; // Fridays in Nov, 2001.
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
@@ -492,15 +502,15 @@ public class TestPayroll extends TestCase{
     public void testHourlyUnionMemberDues() {
         System.err.println("TestHourlyUnionMemberDues");
         int empId = 1;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill","Home",15.24);
+        AddHourlyEmployee t = makeAddHourlyEmployee(empId);
         t.Execute();
         int memberId = 7734;
-        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId,memberId,9.42);
+        ChangeMemberTransaction cmt = makeChangeMemberTransaction(empId, memberId, 9.42);
         cmt.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
         TimeCardTransaction tct = new TimeCardTransaction(payDate, 8.0, empId);
         tct.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
@@ -514,13 +524,13 @@ public class TestPayroll extends TestCase{
     public void testCommissionedUnionMemberDues() {
         System.err.println("TestCommissionedUnionMemberDues");
         int empId = 3;
-        AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Lance", "Home", 2500,.032);
+        AddCommissionedEmployee t = makeAddCommissionedEmployee(empId);
         t.Execute();
         int memberId = 7734;
-        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 9.42);
+        ChangeMemberTransaction cmt = makeChangeMemberTransaction(empId, memberId, 9.42);
         cmt.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 9);
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
@@ -534,17 +544,17 @@ public class TestPayroll extends TestCase{
     public void testHourlyUnionMemberServiceCharge() {
         System.err.println("TestHourlyUnionMemberServiceCharge");
         int empId = 1;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.24);
+        AddHourlyEmployee t = makeAddHourlyEmployee(empId);
         t.Execute();
         int memberId = 7734;
-        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 9.42);
+        ChangeMemberTransaction cmt = makeChangeMemberTransaction(empId, memberId, 9.42);
         cmt.Execute();
         Calendar payDate = new GregorianCalendar(2001, Calendar.NOVEMBER,9);
         ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId, payDate, 19.42);
         sct.Execute();
         TimeCardTransaction tct = new TimeCardTransaction(payDate,8.0,empId);
         tct.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
@@ -558,10 +568,10 @@ public class TestPayroll extends TestCase{
     public void testServiceChargesSpanningMultiplePayPeriods() {
         System.err.println("TestServiceChargesSpanningMultiplePayPeriods");
         int empId = 1;
-        AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home", 15.24);
+        AddHourlyEmployee t = makeAddHourlyEmployee(empId);
         t.Execute();
         int memberId = 7734;
-        ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId, memberId, 9.42);
+        ChangeMemberTransaction cmt = makeChangeMemberTransaction(empId, memberId, 9.42);
         cmt.Execute();
         Calendar earlyDate = new GregorianCalendar(2001, Calendar.NOVEMBER, 2); // Previous
         // Friday
@@ -576,7 +586,7 @@ public class TestPayroll extends TestCase{
         sctLate.Execute();
         TimeCardTransaction tct = new TimeCardTransaction(payDate, 8.0, empId);
         tct.Execute();
-        PaydayTransaction pt = new PaydayTransaction(payDate);
+        PaydayTransaction pt = makePaydayTransaction(payDate);
         pt.Execute();
         Paycheck pc = pt.GetPaycheck(empId);
         assertNotNull(pc);
@@ -596,4 +606,57 @@ public class TestPayroll extends TestCase{
         assertEquals(0.0, pc.GetDeductions());
         assertEquals(pay, pc.GetNetPay());
     }
+
+    private AddSalariedEmployee makeSalariedEmployee(int empId, double salary) {
+        return (AddSalariedEmployee) itsTransactionFactory.makeAddSalariedEmployee(empId, "Bob", "Home", salary);
+    }
+
+    private AddHourlyEmployee makeHourlyEmployee(int empId) {
+        return (AddHourlyEmployee) itsTransactionFactory.makeAddHourlyEmployee(empId, "Bill", "Home", 15.25);
+    }
+
+    private AddCommissionedEmployee makeCommissionedEmployee(int empId) {
+        return (AddCommissionedEmployee) itsTransactionFactory.makeAddCommissionedEmployee(empId, "Lance","Home",2500,3.2);
+    }
+
+    private ChangeMailTransaction makeChangeMailTransaction(int empId) {
+        return (ChangeMailTransaction) itsTransactionFactory.makeChangeMailTransaction(empId, "4080 El Cerrito Road");
+    }
+
+    private ChangeHourlyTransaction makeChangeHourlyTransaction(int empId) {
+        return (ChangeHourlyTransaction) itsTransactionFactory.makeChangeHourlyTransaction(empId, 27.52);
+    }
+
+    private ChangeSalariedTransaction makeChangeSalariedTransaction(int empId) {
+        return (ChangeSalariedTransaction) itsTransactionFactory.makeChangeSalariedTransaction(empId, 25000);
+    }
+
+    private ChangeCommissionedTransaction makeChangeCommissionedTransaction(int empId) {
+        return (ChangeCommissionedTransaction) itsTransactionFactory.makeChangeCommissionedTransaction(empId, 25000, 4.5);
+    }
+
+    private ChangeDirectTransaction makeChangeDirectTransaction(int empId) {
+        return (ChangeDirectTransaction) itsTransactionFactory.makeChangeDirectTransaction(empId, "FirstNational", "1058209");
+    }
+
+    private ChangeHoldTransaction makeChangeHoldTransaction(int empId) {
+        return (ChangeHoldTransaction) itsTransactionFactory.makeChangeHoldTransaction(empId);
+    }
+
+    private ChangeMemberTransaction makeChangeMemberTransaction(int empId, int memberId, double dues) {
+        return (ChangeMemberTransaction) itsTransactionFactory.makeChangeMemberTransaction(empId, memberId, dues);
+    }
+
+    private PaydayTransaction makePaydayTransaction(Calendar payDate) {
+        return (PaydayTransaction) itsTransactionFactory.makePaydayTransaction(payDate);
+    }
+
+    private AddCommissionedEmployee makeAddCommissionedEmployee(int empId) {
+        return (AddCommissionedEmployee) itsTransactionFactory.makeAddCommissionedEmployee(empId, "Lance", "Home", 2500, .032);
+    }
+
+    private AddHourlyEmployee makeAddHourlyEmployee(int empId) {
+        return (AddHourlyEmployee) itsTransactionFactory.makeAddHourlyEmployee(empId, "Bill","Home",15.24);
+    }
+
 }

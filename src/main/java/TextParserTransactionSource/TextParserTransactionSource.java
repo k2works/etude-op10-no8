@@ -10,32 +10,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import AffiliationTransactions.ChangeMemberTransaction;
-import AffiliationTransactions.ChangeUnaffiliatedTransaction;
-import AffiliationTransactions.ServiceChargeTransaction;
-import ClassificationTransactions.ChangeCommissionedTransaction;
-import ClassificationTransactions.ChangeHourlyTransaction;
-import ClassificationTransactions.ChangeSalariedTransaction;
-import ClassificationTransactions.SalesReceiptTransaction;
-import ClassificationTransactions.TimeCardTransaction;
-import GeneralTransactions.AddCommissionedEmployee;
-import GeneralTransactions.AddHourlyEmployee;
-import GeneralTransactions.AddSalariedEmployee;
-import GeneralTransactions.ChangeAddressTransaction;
-import GeneralTransactions.ChangeNameTransaction;
-import GeneralTransactions.DeleteEmployeeTransaction;
-import GeneralTransactions.PaydayTransaction;
-import MethodTransactions.ChangeDirectTransaction;
-import MethodTransactions.ChangeHoldTransaction;
-import MethodTransactions.ChangeMailTransaction;
 import TransactionApplication.Transaction;
 import TransactionApplication.TransactionSource;
+import TransactionFactory.TransactionFactory;
 
 /**
  * Created by k2works on 2017/04/10.
  */
 public class TextParserTransactionSource extends TransactionSource {
     public String itsSource;
+    public TransactionFactory itsTransactionFactory;
+
+    public TextParserTransactionSource(TransactionFactory transactionFactory) {
+        itsTransactionFactory = transactionFactory;
+    }
 
     public void Execute() {
         parse();
@@ -54,29 +42,29 @@ public class TextParserTransactionSource extends TransactionSource {
             t = ChgEmp(line);
         } else if (transactionName.equals("DelEmp")) {
             int empId = Integer.parseInt(line.get(1));
-            t = new DeleteEmployeeTransaction(empId);
-        } else if (transactionName.equals("Affiliations.ServiceCharge")) {
+            t = itsTransactionFactory.makeDeleteEmployeeTransaction(empId);
+        } else if (transactionName.equals("ServiceCharge")) {
             int memberId = Integer.parseInt(line.get(1));
             Calendar date = Calendar.getInstance();
             date.setTime(new SimpleDateFormat("yyyy/MM/dd").parse(line.get(2)));
             double amount = Double.parseDouble(line.get(2));
-            t = new ServiceChargeTransaction(memberId, date, amount);
+            t = itsTransactionFactory.makeServiceChargeTransaction(memberId, date, amount);
         }  else if (transactionName.equals("SalesReceipt")) {
             int empId = Integer.parseInt(line.get(1));
             Calendar date = Calendar.getInstance();
             date.setTime(new SimpleDateFormat("yyyy/MM/dd").parse(line.get(2)));
             double amount = Double.parseDouble(line.get(3));
-            t = new SalesReceiptTransaction(date, amount, empId);
+            t = itsTransactionFactory.makeSalesReceiptTransaction(date, amount, empId);
         } else if (transactionName.equals("TimeCard")) {
             int empId = Integer.parseInt(line.get(1));
             Calendar date = Calendar.getInstance();
             date.setTime(new SimpleDateFormat("yyyy/MM/dd").parse(line.get(2)));
             double hours = Double.parseDouble(line.get(3));
-            t = new TimeCardTransaction(date, hours, empId);
+            t = itsTransactionFactory.makeTimeCardTransaction(date, hours, empId);
         } else if (transactionName.equals("Payday")) {
             Calendar payDate = Calendar.getInstance();
             payDate.setTime(new SimpleDateFormat("yyyy/MM/dd").parse(line.get(1)));
-            t = new PaydayTransaction(payDate);
+            t = itsTransactionFactory.makePaydayTransaction(payDate);
         }
         if (t != null) {
             t.Execute();
@@ -139,14 +127,14 @@ public class TextParserTransactionSource extends TransactionSource {
         int empId = Integer.parseInt(line.get(1));
         if (line.get(4).equals("H")) {
             double hourlyRate = Double.parseDouble(line.get(5));
-            t = new AddHourlyEmployee(empId, line.get(2),  line.get(3), hourlyRate);
+            t = itsTransactionFactory.makeAddHourlyEmployee(empId, line.get(2),  line.get(3), hourlyRate);
         } else if (line.get(4).equals("S")) {
             double salary = Double.parseDouble(line.get(5));
-            t = new AddSalariedEmployee(empId, line.get(2), line.get(3), salary);
+            t = itsTransactionFactory.makeAddSalariedEmployee(empId, line.get(2), line.get(3), salary);
         } else if (line.get(4).equals("C")) {
             double salary = Double.parseDouble(line.get(5));
             double commissionRate = Double.parseDouble(line.get(6));
-            t = new AddCommissionedEmployee(empId, line.get(2), line.get(3), salary, commissionRate);
+            t = itsTransactionFactory.makeAddCommissionedEmployee(empId, line.get(2), line.get(3), salary, commissionRate);
         }
         return t;
     }
@@ -157,35 +145,35 @@ public class TextParserTransactionSource extends TransactionSource {
         String changeInfo = line.get(2);
         if (changeInfo.equals("Name")) {
             String name = line.get(3);
-            t = new ChangeNameTransaction(empId, name);
+            t = itsTransactionFactory.makeChangeNameTransaction(empId, name);
         } else if (changeInfo.equals("Address")) {
             String address = line.get(3);
-            t = new ChangeAddressTransaction(empId, address);
+            t = itsTransactionFactory.makeChangeAddressTransaction(empId, address);
         } else if (changeInfo.equals("Hourly")) {
             double hourly = Double.parseDouble(line.get(3));
-            t = new ChangeHourlyTransaction(empId, hourly);
+            t = itsTransactionFactory.makeChangeHourlyTransaction(empId, hourly);
         } else if (changeInfo.equals("Salaried")) {
             double salary = Double.parseDouble(line.get(3));
-            t = new ChangeSalariedTransaction(empId, salary);
+            t = itsTransactionFactory.makeChangeSalariedTransaction(empId, salary);
         } else if (changeInfo.equals("Commissioned")) {
             double salary = Double.parseDouble(line.get(3));
             double rate = Double.parseDouble(line.get(4));
-            t = new ChangeCommissionedTransaction(empId, salary, rate);
+            t = itsTransactionFactory.makeChangeCommissionedTransaction(empId, salary, rate);
         } else if (changeInfo.equals("Hold")) {
-            t = new ChangeHoldTransaction(empId);
+            t = itsTransactionFactory.makeChangeHoldTransaction(empId);
         } else if (changeInfo.equals("Direct")) {
             String bank = line.get(3);
             String account = line.get(4);
-            t = new ChangeDirectTransaction(empId, bank, account);
+            t = itsTransactionFactory.makeChangeDirectTransaction(empId, bank, account);
         } else if (changeInfo.equals("Mail")) {
             String address = line.get(3);
-            t = new ChangeMailTransaction(0, address);
+            t = itsTransactionFactory.makeChangeMailTransaction(0, address);
         } else if (changeInfo.equals("Member")) {
             int memberId = Integer.parseInt(line.get(3));
             double dues = Double.parseDouble(line.get(5));
-            t = new ChangeMemberTransaction(empId, memberId, dues);
+            t = itsTransactionFactory.makeChangeMemberTransaction(empId, memberId, dues);
         } else if (changeInfo.equals("NoMember")) {
-            t = new ChangeUnaffiliatedTransaction(empId);
+            t = itsTransactionFactory.makeChangeUnaffiliatedTransaction(empId);
         }
         return t;
     }
